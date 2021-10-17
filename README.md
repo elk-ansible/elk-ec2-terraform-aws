@@ -30,7 +30,7 @@ $ openssl pkcs12 -export  -inkey es1-sb.dfh.ai.key  -in es1-sb.dfh.ai.cer -certf
 ```
 
             
-# Ansible SSH Hostfile for Inventory
+### Ansible SSH Hostfile for Inventory
 
 ```shell
 aws ec2 describe-instances \
@@ -41,3 +41,18 @@ aws ec2 describe-instances \
 --profile hgs |awk '{print "Host hgs-"tolower($1)"\nHostName "$2}'
 ```            
 
+
+### GoDaddy DNS Change
+```shell
+#DNS
+
+curl -X PATCH https://api.godaddy.com/v1/domains/dfh.ai/records \
+-H 'Authorization: sso-key $GD_Key:$GD_Secret' \
+  -H 'Content-Type: application/json' \
+  --data '[
+  {"type": "A","name": "es1-sb","data": "54.144.71.241","ttl": 3600},
+   {"type": "A","name": "es2-sb","data": "3.83.40.239","ttl": 3600},
+   {"type": "A","name": "es3-sb","data": "54.152.119.227","ttl": 3600}
+  ]'
+
+```
