@@ -1,58 +1,3 @@
-resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.tf_main.id
-
-  tags = {
-    Name = "tf-main-gw"
-  }
-}
-
-resource "aws_vpc" "tf_main" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-  tags                 = {
-    Name = "tf-main-vpc"
-  }
-}
-resource "aws_subnet" "tf_main" {
-  vpc_id     = aws_vpc.tf_main.id
-  cidr_block = "10.0.1.0/24"
-
-  tags = {
-    Name = "tf-Main-subnet"
-  }
-}
-
-resource "aws_route_table" "example" {
-  vpc_id = aws_vpc.tf_main.id
-
-  route = [
-    {
-      cidr_block                 = "0.0.0.0/0"
-      ipv6_cidr_block            = null
-      gateway_id                 = aws_internet_gateway.gw.id
-      carrier_gateway_id         = null
-      destination_prefix_list_id = null
-      egress_only_gateway_id     = null
-      instance_id                = null
-      local_gateway_id           = null
-      nat_gateway_id             = null
-      network_interface_id       = null
-      transit_gateway_id         = null
-      vpc_endpoint_id            = null
-      vpc_peering_connection_id  = null
-    }
-  ]
-
-  tags = {
-    Name = "tf-example-route"
-  }
-}
-
-resource "aws_route_table_association" "a" {
-  subnet_id      = aws_subnet.tf_main.id
-  route_table_id = aws_route_table.example.id
-}
 resource "aws_security_group" "allow_tls" {
   name        = "allow_tls"
   description = "Allow TLS inbound traffic"
@@ -112,5 +57,67 @@ resource "aws_security_group" "allow_tls" {
 
   tags = {
     Name = "tf_allow_tls"
+  }
+}
+
+resource "aws_security_group" "elk_es_nodes" {
+  name        = "elk_es_nodes"
+  description = "Elasticsearch nodes "
+  vpc_id      = aws_vpc.tf_main.id
+
+  ingress = [
+    {
+      description      = "Transport Port "
+      from_port        = 9300
+      to_port          = 9300
+      protocol         = "tcp"
+      cidr_blocks      = [aws_vpc.tf_main.cidr_block]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+
+    },
+    {
+      description      = "HTTP port Everywhere"
+      from_port        = 9200
+      to_port          = 9200
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+
+    }, {
+      description      = "SSH from Everywhere"
+      from_port        = 22
+      to_port          = 22
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+
+    }
+  ]
+
+  egress = [
+    {
+      description      = "TLS from VPC"
+      from_port        = 0
+      to_port          = 0
+      protocol         = "-1"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+    }
+  ]
+
+  tags = {
+    Name = "tf_elk_es_nodes"
   }
 }

@@ -14,3 +14,9 @@ variable "instance_type" {
   type = string
   default = "c5d.large"
 }
+
+
+variable "ssh_key" {
+  type = string
+  default = "id_rsa"
+}
