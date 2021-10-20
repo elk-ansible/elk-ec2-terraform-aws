@@ -24,6 +24,14 @@ resource "aws_route53_record" "kibana_prv" {
   records  = [aws_instance.kibana_server.private_dns]
 }
 
+resource "aws_route53_record" "ent_search_prv" {
+  zone_id  = aws_route53_zone.example.zone_id
+  name     = "ent-search"
+  type     = "CNAME"
+  ttl      = "300"
+  records  = [aws_instance.kibana_server.private_dns]
+}
+
 ### Public DNS Zone
 resource "aws_route53_zone" "example_public" {
   name = "sciviz.co"
@@ -42,6 +50,14 @@ resource "aws_route53_record" "www_public" {
 resource "aws_route53_record" "kibana_pub" {
   zone_id  = aws_route53_zone.example_public.zone_id
   name     = "kibana"
+  type     = "CNAME"
+  ttl      = "300"
+  records  = [aws_instance.kibana_server.public_dns]
+}
+
+resource "aws_route53_record" "ent_search_pub" {
+  zone_id  = aws_route53_zone.example_public.zone_id
+  name     = "ent-search"
   type     = "CNAME"
   ttl      = "300"
   records  = [aws_instance.kibana_server.public_dns]

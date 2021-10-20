@@ -1,4 +1,5 @@
 #! /bin/bash
+#amazon-linux-extras install -y  java-openjdk11
 sudo yum install -y httpd
 sudo systemctl start httpd
 sudo systemctl enable httpd

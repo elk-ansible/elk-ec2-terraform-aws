@@ -45,6 +45,8 @@ resource "aws_instance" "kibana_server" {
     Terraform   = "true"
     Environment = "dev"
   }
-  vpc_security_group_ids      = [aws_security_group.allow_tls.id, aws_security_group.elk_kibana.id]
+  vpc_security_group_ids      = [
+    aws_security_group.allow_tls.id, aws_security_group.elk_kibana.id, aws_security_group.elk_ent_search.id
+  ]
 }
 
