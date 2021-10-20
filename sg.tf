@@ -121,3 +121,54 @@ resource "aws_security_group" "elk_es_nodes" {
     Name = "tf_elk_es_nodes"
   }
 }
+
+resource "aws_security_group" "elk_kibana" {
+  name        = "elk_kibana"
+  description = "Kibana node"
+  vpc_id      = aws_vpc.tf_main.id
+
+  ingress = [
+    {
+      description      = "Kibana Port"
+      from_port        = 5601
+      to_port          = 5601
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+
+    },
+    {
+      description      = "SSH from Everywhere"
+      from_port        = 22
+      to_port          = 22
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+
+    }
+  ]
+
+  egress = [
+    {
+      description      = "TLS from VPC"
+      from_port        = 0
+      to_port          = 0
+      protocol         = "-1"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+    }
+  ]
+
+  tags = {
+    Name = "tf_elk_kibana"
+  }
+}
