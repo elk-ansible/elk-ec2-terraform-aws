@@ -40,13 +40,17 @@ resource "aws_instance" "kibana_server" {
   subnet_id                   = aws_subnet.tf_main.id
   associate_public_ip_address = true
   key_name                    = var.ssh_key
+  user_data = "${file("user-data-kibana.sh")}"
   tags                        = {
     Name        = "tf-elk-kibana"
     Terraform   = "true"
     Environment = "dev"
   }
   vpc_security_group_ids      = [
-    aws_security_group.allow_tls.id, aws_security_group.elk_kibana.id, aws_security_group.elk_ent_search.id
+    aws_security_group.allow_tls.id,
+    aws_security_group.elk_kibana.id,
+    aws_security_group.elk_ent_search.id,
+    aws_security_group.elk_apm_server.id
   ]
 }
 
