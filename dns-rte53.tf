@@ -1,16 +1,16 @@
 ####################
 # Private DNS Zone #
 ####################
-resource "aws_route53_zone" "example" {
-  name = "sciviz.co"
+resource "aws_route53_zone" "private_zone" {
+  name = var.domain_name
   vpc {
     vpc_id = aws_vpc.tf_main.id
   }
 }
 
 # Elasticsearch Nodes Private DNS
-resource "aws_route53_record" "www" {
-  zone_id  = aws_route53_zone.example.zone_id
+resource "aws_route53_record" "private" {
+  zone_id  = aws_route53_zone.private_zone.zone_id
   for_each = toset(["es01", "es02", "es03"])
   name     = each.key
   type     = "A"
@@ -19,7 +19,7 @@ resource "aws_route53_record" "www" {
 }
 # Kibana  Private  DNS
 resource "aws_route53_record" "kibana_prv" {
-  zone_id  = aws_route53_zone.example.zone_id
+  zone_id  = aws_route53_zone.private_zone.zone_id
   name     = "kibana"
   type     = "CNAME"
   ttl      = "300"
@@ -27,7 +27,7 @@ resource "aws_route53_record" "kibana_prv" {
 }
 # Enterprise Search Private  DNS
 resource "aws_route53_record" "ent_search_prv" {
-  zone_id  = aws_route53_zone.example.zone_id
+  zone_id  = aws_route53_zone.private_zone.zone_id
   name     = "ent-search"
   type     = "CNAME"
   ttl      = "300"
@@ -35,7 +35,7 @@ resource "aws_route53_record" "ent_search_prv" {
 }
 # APM Server Private DNS
 resource "aws_route53_record" "apm_serv_prv" {
-  zone_id  = aws_route53_zone.example.zone_id
+  zone_id  = aws_route53_zone.private_zone.zone_id
   name     = "apm-server"
   type     = "CNAME"
   ttl      = "300"
@@ -43,7 +43,7 @@ resource "aws_route53_record" "apm_serv_prv" {
 }
 # Logstash Private  DNS
 resource "aws_route53_record" "logstash_prv" {
-  zone_id  = aws_route53_zone.example.zone_id
+  zone_id  = aws_route53_zone.private_zone.zone_id
   name     = "logstash"
   type     = "CNAME"
   ttl      = "300"
@@ -52,13 +52,13 @@ resource "aws_route53_record" "logstash_prv" {
 ###################
 # Public DNS Zone #
 ###################
-resource "aws_route53_zone" "example_public" {
-  name = "sciviz.co"
+resource "aws_route53_zone" "public_zone" {
+  name = var.domain_name
 }
 
 # Elasticsearch Nodes Public DNS
-resource "aws_route53_record" "www_public" {
-  zone_id  = aws_route53_zone.example_public.zone_id
+resource "aws_route53_record" "public_zone" {
+  zone_id  = aws_route53_zone.public_zone.zone_id
   for_each = toset(["es01", "es02", "es03"])
   name     = each.key
   type     = "A"
@@ -67,7 +67,7 @@ resource "aws_route53_record" "www_public" {
 }
 # Kibana Public DNS
 resource "aws_route53_record" "kibana_pub" {
-  zone_id  = aws_route53_zone.example_public.zone_id
+  zone_id  = aws_route53_zone.public_zone.zone_id
   name     = "kibana"
   type     = "CNAME"
   ttl      = "300"
@@ -75,7 +75,7 @@ resource "aws_route53_record" "kibana_pub" {
 }
 # Enterprise Search Public DNS
 resource "aws_route53_record" "ent_search_pub" {
-  zone_id  = aws_route53_zone.example_public.zone_id
+  zone_id  = aws_route53_zone.public_zone.zone_id
   name     = "ent-search"
   type     = "CNAME"
   ttl      = "300"
@@ -83,7 +83,7 @@ resource "aws_route53_record" "ent_search_pub" {
 }
 # APM Server Public DNS
 resource "aws_route53_record" "apm_serv_pub" {
-  zone_id  = aws_route53_zone.example_public.zone_id
+  zone_id  = aws_route53_zone.public_zone.zone_id
   name     = "apm-server"
   type     = "CNAME"
   ttl      = "300"
@@ -91,7 +91,7 @@ resource "aws_route53_record" "apm_serv_pub" {
 }
 # Logstash Public DNS
 resource "aws_route53_record" "logstash_pub" {
-  zone_id  = aws_route53_zone.example_public.zone_id
+  zone_id  = aws_route53_zone.public_zone.zone_id
   name     = "logstash"
   type     = "CNAME"
   ttl      = "300"

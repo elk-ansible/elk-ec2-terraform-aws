@@ -150,6 +150,56 @@ resource "aws_security_group" "elk_kibana" {
 }
 
 
+resource "aws_security_group" "elk_logstash" {
+  name        = "elk_logstash"
+  description = "Logstash"
+  vpc_id      = aws_vpc.tf_main.id
+
+  ingress = [
+        {
+      description      = "Logstash Input Beats"
+      from_port        = 5044
+      to_port          = 5044
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+
+    },
+    {
+      description      = "Logstash Monitoring port"
+      from_port        = 9600
+      to_port          = 9600
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+
+    }
+  ]
+
+  egress = [
+    {
+      description      = "TLS from VPC"
+      from_port        = 0
+      to_port          = 0
+      protocol         = "-1"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+    }
+  ]
+
+  tags = {
+    Name = "tf_elk_ent_search"
+  }
+}
 
 resource "aws_security_group" "elk_ent_search" {
   name        = "elk_ent_search"

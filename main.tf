@@ -50,7 +50,8 @@ resource "aws_instance" "kibana_server" {
     aws_security_group.allow_tls.id,
     aws_security_group.elk_kibana.id,
     aws_security_group.elk_ent_search.id,
-    aws_security_group.elk_apm_server.id
+    aws_security_group.elk_apm_server.id,
+    aws_security_group.elk_logstash.id
   ]
 }
 

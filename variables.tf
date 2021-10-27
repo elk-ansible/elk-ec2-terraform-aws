@@ -1,7 +1,12 @@
-variable "instance_name" {
-  description = "Value of the Name tag for the EC2 instance"
+variable "env_name" {
+  description = "Environment Name DEV, UAT, PROD"
   type        = string
-  default     = "ExampleAppServerInstance"
+  default     = "dev"
+}
+variable "region" {
+  description = "AWS Region"
+  type = string
+  default = "us-east-1"
 }
 
 variable "ami_image" {
@@ -19,4 +24,9 @@ variable "instance_type" {
 variable "ssh_key" {
   type = string
   default = "id_rsa"
+}
+
+variable "domain_name" {
+  type = string
+  default = "example.com"
 }
