@@ -12,6 +12,16 @@ provider "aws" {
   profile = "default"
   region  = "us-west-2"
 }
+data "aws_ami" "amazon-2" {
+  most_recent = true
+
+  filter {
+    name = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+  owners = ["amazon"]
+}
+
 #Elasticsearch Nodes
 module "ec2_instance" {
   source                      = "terraform-aws-modules/ec2-instance/aws"
@@ -19,7 +29,8 @@ module "ec2_instance" {
   associate_public_ip_address = true
   for_each                    = toset(["es01", "es02", "es03"])
   name                        = "tf-elk-${each.key}"
-  ami                         = var.ami_image
+#  ami                         = var.ami_image
+  ami                         = data.aws_ami.amazon-2.id
   instance_type               = var.instance_type
   key_name                    = var.ssh_key
   monitoring                  = true
