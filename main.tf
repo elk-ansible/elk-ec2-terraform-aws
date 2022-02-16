@@ -66,3 +66,39 @@ resource "aws_instance" "kibana_server" {
   ]
 }
 
+# Logstash Nodes
+resource "aws_instance" "logstash_node1" {
+  ami                         = var.ami_image
+  instance_type               = "t3.large"
+  subnet_id                   = aws_subnet.tf_main.id
+  associate_public_ip_address = true
+  key_name                    = var.ssh_key
+  user_data = "${file("user-data-kibana.sh")}"
+  tags                        = {
+    Name        = "tf-elk-ls01"
+    Terraform   = "true"
+    Environment = "dev"
+  }
+  vpc_security_group_ids      = [
+    aws_security_group.allow_tls.id,
+    aws_security_group.elk_logstash.id
+  ]
+}
+
+resource "aws_instance" "logstash_node2" {
+  ami                         = var.ami_image
+  instance_type               = "t3.large"
+  subnet_id                   = aws_subnet.tf_main.id
+  associate_public_ip_address = true
+  key_name                    = var.ssh_key
+  user_data = "${file("user-data-kibana.sh")}"
+  tags                        = {
+    Name        = "tf-elk-ls02"
+    Terraform   = "true"
+    Environment = "dev"
+  }
+  vpc_security_group_ids      = [
+    aws_security_group.allow_tls.id,
+    aws_security_group.elk_logstash.id
+  ]
+}

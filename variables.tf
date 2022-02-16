@@ -17,7 +17,7 @@ variable "ami_image" {
 
 variable "instance_type" {
   type = string
-  default = "c5d.large"
+  default = "c5d.2xlarge"
 }
 
 
